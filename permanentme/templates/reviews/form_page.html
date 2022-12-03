@@ -1,0 +1,63 @@
+{% extends "base.html" %}
+{% load static %}
+{% load i18n wagtailimages_tags %}
+{% load i18n wagtailcore_tags %}
+{% load static wagtailuserbar %}
+
+{% block content %}
+
+<body class="is-preload">
+
+    <!-- Wrapper -->
+    <div id="wrapper" class="fade-in">
+
+
+
+        <!-- Header -->
+        <header id="header">
+            <a href="index.html" class="logo">Permanent make up <3 </a>
+        </header>
+
+        <!-- Nav -->
+
+        {% block menu %}
+        {% include "includes/menu.html" %}
+        {% endblock menu %}
+
+        <!-- Main -->
+        <div id="main">
+
+            <h2>Reviews</h2>
+
+            <form action="{% pageurl page %}" method="POST">
+                {% csrf_token %}
+                {{ form.as_p }}
+                <input type="submit">
+            </form>
+
+
+            <h2>Results</h2>
+       
+            {% for question, answers in results.items %}
+            <h3>{{ question }}</h3>
+            {% for answer, count in answers.items %}
+                <div>{{ answer }}: {{ count }}</div>
+            {% endfor %}
+        {% endfor %}
+          
+       
+           
+           
+      
+
+
+        </div>
+
+        <!-- Footer -->
+        {% block footer %}
+        {% include "includes/footer.html" %}
+        {% endblock footer %}
+
+    </div>
+
+    {% endblock %}

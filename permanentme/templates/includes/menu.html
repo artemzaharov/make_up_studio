@@ -1,0 +1,28 @@
+{% load i18n wagtailcore_tags %}
+
+<nav id="nav">
+
+    <ul class="links">
+        {% comment %} <li class="active"><a href="index.html">Home</a></li>
+        <li><a href="generic.html">Services</a></li>
+        <li><a href="elements.html">Galerry</a></li> {% endcomment %}
+        {% for block in page.menu.menu %}
+                {% include_block block  %}
+           {% endfor %} 
+    </ul>
+
+    <ul class="links">
+        {% if page %}
+        {% for translation in page.get_translations.live %}
+        {% get_language_info for translation.locale.language_code as lang %}
+        <li> <a href="{% pageurl translation %}" rel="alternate" hreflang="{{ language_code }}">
+                {{ lang.name_local|title|slice:":3" }} &nbsp;
+            </a></li>
+        {% endfor %}
+        {% endif %}
+    </ul>
+    
+    <ul class="icons">
+        <li><a href="https://www.instagram.com/permanent.me/" class="icon brands fa-instagram"><span class="label">Instagram</span></a></li>
+    </ul>
+</nav>
