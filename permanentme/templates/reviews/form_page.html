@@ -11,53 +11,51 @@
     <!-- Wrapper -->
     <div id="wrapper" class="fade-in">
 
+        <section class="post">
+
+            <!-- Header -->
+            <header id="header">
+                <a href="index.html" class="logo">Permanent make up <3 </a>
+            </header>
+
+            <!-- Nav -->
+
+            {% block menu %}
+            {% include "includes/menu.html" %}
+            {% endblock menu %}
+
+            <!-- Main -->
+            <div id="main">
+                <section class="post">
+                    <h2>Reviews</h2>
+
+                    <form action="{% pageurl page %}" method="POST">
+                        {% csrf_token %}
+                        {{ form.as_p }}
+                        <input type="submit">
+                    </form>
 
 
-        <!-- Header -->
-        <header id="header">
-            <a href="index.html" class="logo">Permanent make up <3 </a>
-        </header>
-
-        <!-- Nav -->
-
-        {% block menu %}
-        {% include "includes/menu.html" %}
-        {% endblock menu %}
-
-        <!-- Main -->
-        <div id="main">
-
-            <h2>Reviews</h2>
-
-            <form action="{% pageurl page %}" method="POST">
-                {% csrf_token %}
-                {{ form.as_p }}
-                <input type="submit">
-            </form>
+                    <h2>Results</h2>
 
 
-            <h2>Results</h2>
-       
-            {% for question, answers in results.items %}
-            <h3>{{ question }}</h3>
-            {% for answer, count in answers.items %}
-                <div>{{ answer }}: {{ count }}</div>
-            {% endfor %}
-        {% endfor %}
-          
-       
-           
-           
-      
+                    {% for result in results %}
+                    <blockquote>
+                        {% for q, r in result.items %}
+                        {{r}}
+                        <br>
+                        {% endfor %}
+                    </blockquote>
+                    {% endfor %}
+            </div>
 
+            <!-- Footer -->
+            {% block footer %}
+            {% include "includes/footer.html" %}
+            {% endblock footer %}
 
-        </div>
-
-        <!-- Footer -->
-        {% block footer %}
-        {% include "includes/footer.html" %}
-        {% endblock footer %}
-
+        </section>
+        
     </div>
 
     {% endblock %}

@@ -1,4 +1,5 @@
 from django.db import models
+from home.models import Menu
 from modelcluster.fields import ParentalKey
 from wagtail.admin.panels import (
     FieldPanel, FieldRowPanel,
@@ -15,6 +16,10 @@ class FormField(AbstractFormField):
 class FormPage(AbstractEmailForm):
     intro = RichTextField(blank=True)
     thank_you_text = RichTextField(blank=True)
+    
+    menu = models.ForeignKey(
+        Menu, on_delete=models.SET_NULL, null=True, related_name="+"
+    )
 
     content_panels = AbstractEmailForm.content_panels + [
         FieldPanel('intro'),
@@ -27,6 +32,7 @@ class FormPage(AbstractEmailForm):
             ]),
             FieldPanel('subject'),
         ], "Email"),
+        FieldPanel("menu"),
     ]
 
     def get_context(self, request, *args, **kwargs):
@@ -35,38 +41,21 @@ class FormPage(AbstractEmailForm):
         # If you need to show results only on landing page,
         # you may need check request.method
 
-        results = dict()
+        results = list()
         # Get information about form fields
         data_fields = [
             (field.clean_name, field.label)
             for field in self.get_form_fields()
         ]
+        
 
         # Get all submissions for current page
         submissions = self.get_submission_class().objects.filter(page=self)
         for submission in submissions:
             data = submission.get_data()
-            print(data)
-           
-
-            # Count results for each question
-            for name, label in data_fields:
-                answer = data.get(name)
-                if answer is None:
-                    # Something wrong with data.
-                    # Probably you have changed questions
-                    # and now we are receiving answers for old questions.
-                    # Just skip them.
-                    continue
-
-                if type(answer) is list:
-                    # Answer is a list if the field type is 'Checkboxes'
-                    answer = u', '.join(answer)
-
-                question_stats = results.get(label, {})
-                question_stats[answer] = question_stats.get(answer, 0) + 1
-                results[label] = question_stats
-
+            results.append(data)
+        
+        print(results)
         context.update({
             'results': results,
         })
